@@ -3,103 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Limit-O</title>
+    <title>坚守 - Limit-O</title>
     <style>
         body {
             font-family: 'Microsoft YaHei', sans-serif;
-            line-height: 1.6;
+            line-height: 1.8;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             color: #333;
+            background-color: #f9f9f9;
         }
-        #content {
-            white-space: pre-line;
-            margin-top: 20px;
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
-        .chapter-list {
-            margin-bottom: 20px;
+        #chapter-container {
+            display: flex;
+            gap: 30px;
+        }
+        #chapter-list {
+            width: 220px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        #chapter-content {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .chapter-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
         .chapter-link {
-            display: block;
-            margin: 5px 0;
-            color: #0366d6;
+            color: #1a73e8;
             text-decoration: none;
+            display: block;
+            transition: color 0.2s;
         }
         .chapter-link:hover {
-            text-decoration: underline;
+            color: #0d47a1;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        .error {
+            color: #d32f2f;
+            padding: 15px;
+            background: #ffebee;
+            border-radius: 4px;
+        }
+        pre {
+            white-space: pre-wrap;
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            #chapter-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            #chapter-list {
+                width: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>坚守</h1>
+    <header>
+        <h1>坚守</h1>
+        <p>绛衣虹人</p>
+    </header>
     
-    <div class="chapter-list" id="chapterList">
-        <h2>章节列表</h2>
-        <!-- 章节列表将通过JavaScript动态生成 -->
-    </div>
-    
-    <div id="content">
-        <p>请从左侧选择章节阅读。</p>
+    <div id="chapter-container">
+        <div id="chapter-list">
+            <h2>章节列表</h2>
+            <div id="chapters">
+                <p class="loading">加载章节列表中...</p>
+            </div>
+        </div>
+        
+        <div id="chapter-content">
+            <p>请从左侧选择章节开始阅读。</p>
+        </div>
     </div>
 
     <script>
-        // 你的GitHub仓库信息
-        const repoOwner = 'Limit-O';
-        const repoName = 'Limit-O';
-        const folderPath = 'novels'; // 存放小说的文件夹路径
+        // 配置信息
+        const config = {
+            githubUser: 'Limit-O',
+            repoName: 'Limit-O',
+            branch: 'main',  // 你的分支名
+            folder: 'novels' // 存放小说的文件夹
+        };
         
-        // 获取章节列表
-        async function fetchChapters() {
+        // 初始化章节列表
+        async function initChapterList() {
             try {
-                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
-                if (!response.ok) {
-                    throw new Error('获取章节列表失败');
-                }
-                const files = await response.json();
+                // 使用GitHub API获取目录内容
+                const apiUrl = `https://api.github.com/repos/${config.githubUser}/${config.repoName}/contents/${config.folder}`;
+                const response = await fetch(apiUrl);
                 
-                const chapterList = document.getElementById('chapterList');
+                if (!response.ok) {
+                    throw new Error(`获取章节列表失败: ${response.status}`);
+                }
+                
+                const files = await response.json();
+                const chaptersContainer = document.getElementById('chapters');
+                chaptersContainer.innerHTML = '';
                 
                 // 过滤出.md文件并创建链接
                 files.forEach(file => {
                     if (file.name.endsWith('.md')) {
-                        const link = document.createElement('a');
-                        link.href = '#';
-                        link.className = 'chapter-link';
-                        link.textContent = file.name.replace('.txt', '');
-                        link.onclick = () => loadChapter(file.path);
-                        chapterList.appendChild(link);
+                        const chapterItem = document.createElement('div');
+                        chapterItem.className = 'chapter-item';
+                        
+                        const chapterLink = document.createElement('a');
+                        chapterLink.href = '#';
+                        chapterLink.className = 'chapter-link';
+                        chapterLink.textContent = file.name.replace('.md', '');
+                        chapterLink.onclick = () => loadChapter(file.name);
+                        
+                        chapterItem.appendChild(chapterLink);
+                        chaptersContainer.appendChild(chapterItem);
                     }
                 });
+                
+                // 如果没有找到任何章节
+                if (chaptersContainer.children.length === 0) {
+                    chaptersContainer.innerHTML = '<p>暂无章节</p>';
+                }
+                
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('content').innerHTML = `<p>加载章节列表时出错: ${error.message}</p>`;
+                console.error('初始化章节列表失败:', error);
+                document.getElementById('chapters').innerHTML = `
+                    <p class="error">加载章节列表失败!</p>
+                    <p>错误信息: ${error.message}</p>
+                `;
             }
         }
         
         // 加载章节内容
-        async function loadChapter(filePath) {
+        async function loadChapter(chapterName) {
+            const contentDiv = document.getElementById('chapter-content');
+            contentDiv.innerHTML = '<p class="loading">加载中，请稍候...</p>';
+            
             try {
-                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`);
+                // 构建Raw文件URL
+                const rawUrl = `https://raw.githubusercontent.com/${config.githubUser}/${config.repoName}/${config.branch}/${config.folder}/${chapterName}`;
+                
+                // 获取文件内容
+                const response = await fetch(rawUrl);
+                
                 if (!response.ok) {
-                    throw new Error('获取章节内容失败');
+                    throw new Error(`获取章节内容失败: ${response.status}`);
                 }
-                const file = await response.json();
                 
-                // Base64解码内容
-                const content = atob(file.content);
-                document.getElementById('content').innerHTML = `<h2>${file.name.replace('.txt', '')}</h2><pre>${content}</pre>`;
+                // 直接获取文本内容
+                const content = await response.text();
                 
-                // 滚动到内容区域
-                document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
+                // 显示内容
+                contentDiv.innerHTML = `
+                    <h2>${chapterName.replace('.md', '')}</h2>
+                    <pre>${escapeHtml(content)}</pre>
+                `;
+                
+                // 保存阅读进度
+                saveReadingProgress(chapterName);
+                
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('content').innerHTML = `<p>加载章节内容时出错: ${error.message}</p>`;
+                console.error('加载章节失败:', error);
+                contentDiv.innerHTML = `
+                    <p class="error">加载章节失败!</p>
+                    <p>错误信息: ${error.message}</p>
+                    <p>请检查网络连接或稍后再试。</p>
+                `;
             }
         }
         
-        // 页面加载时获取章节列表
-        window.onload = fetchChapters;
+        // HTML转义函数
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+        
+        // 保存阅读进度
+        function saveReadingProgress(chapterName) {
+            try {
+                localStorage.setItem('lastReadChapter', chapterName);
+            } catch (e) {
+                console.log('本地存储不可用:', e);
+            }
+        }
+        
+        // 恢复阅读进度
+        function restoreReadingProgress() {
+            try {
+                const lastChapter = localStorage.getItem('lastReadChapter');
+                if (lastChapter) {
+                    // 高亮最后阅读的章节
+                    const links = document.querySelectorAll('.chapter-link');
+                    links.forEach(link => {
+                        if (link.textContent + '.md' === lastChapter) {
+                            link.style.fontWeight = 'bold';
+                            link.style.color = '#0d47a1';
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log('无法恢复阅读进度:', e);
+            }
+        }
+        
+        // 页面加载时初始化
+        window.onload = async function() {
+            await initChapterList();
+            restoreReadingProgress();
+            
+            // 如果URL中有章节参数，直接加载
+            const urlParams = new URLSearchParams(window.location.search);
+            const chapterParam = urlParams.get('chapter');
+            if (chapterParam) {
+                loadChapter(chapterParam + '.md');
+            }
+        };
     </script>
 </body>
 </html>
