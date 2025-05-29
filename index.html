@@ -3,387 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HappyWorld我的世界服务器</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Limit-O</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: '微软雅黑', sans-serif;
+            font-family: 'Microsoft YaHei', sans-serif;
             line-height: 1.6;
-            color: #333;
-        }
-
-        /* 导航栏样式 */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(40, 40, 40, 0.9);
-            padding: 1rem;
-            z-index: 1000;
-        }
-
-        nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-        }
-
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 0 2rem;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #00ff88;
-        }
-
-        /* 横幅部分 */
-        .banner {
-            height: 600px;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://via.placeholder.com/1920x600/333/00ff88?text=HappyWorld');
-            background-size: cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-        }
-
-        /* 内容区块通用样式 */
-        section {
-            padding: 4rem 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #333;
-        }
-
-        /* 特色功能样式 */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-        }
-
-        .feature-card {
-            text-align: center;
-            padding: 2rem;
-            background: #f8f8f8;
-            border-radius: 10px;
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* 赞助表格样式 */
-        .sponsor-table {
-            width: 100%;
             max-width: 800px;
             margin: 0 auto;
-            border-collapse: collapse;
+            padding: 20px;
+            color: #333;
         }
-
-        .sponsor-table th, .sponsor-table td {
-            padding: 1rem;
-            border: 1px solid #ddd;
-            text-align: left;
+        #content {
+            white-space: pre-line;
+            margin-top: 20px;
         }
-
-        .sponsor-table th {
-            background-color: #00ff88;
-            color: white;
+        .chapter-list {
+            margin-bottom: 20px;
         }
-
-        .sponsor-table tr:nth-child(even) {
-            background-color: #f2f2f2;
+        .chapter-link {
+            display: block;
+            margin: 5px 0;
+            color: #0366d6;
+            text-decoration: none;
         }
-
-        /* QQ群样式 */
-        .qq-group {
-            background-color: #12b7f5;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            display: inline-block;
-            margin: 0.5rem 0;
-        }
-
-        /* 二维码样式 */
-        .qrcode-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .qrcode {
-            text-align: center;
-        }
-
-        .qrcode img {
-            width: 200px;
-            height: 200px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-
-        .qrcode p {
-            margin-top: 0.5rem;
-            font-weight: bold;
-        }
-
-        /* 微信支付提示 */
-        .wechat-pay {
-            background-color: #07c160;
-            color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            text-align: center;
-            max-width: 500px;
-            margin: 1rem auto;
-        }
-
-        /* 制作人员样式 */
-        .creators {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #eee;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            nav a {
-                padding: 0.5rem;
-            }
-            
-            .banner h1 {
-                font-size: 2.5rem;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
-            
-            .qrcode img {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .qrcode-container {
-                flex-direction: column;
-                align-items: center;
-            }
+        .chapter-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="#home">首页</a></li>
-            <li><a href="#about">关于</a></li>
-            <li><a href="#features">特色</a></li>
-            <li><a href="#rules">规则</a></li>
-            <li><a href="#sponsor">赞助</a></li>
-            <li><a href="#join">加入</a></li>
-        </ul>
-    </nav>
+    <h1>坚守：职</h1>
+    
+    <div class="chapter-list" id="chapterList">
+        <h2>章节列表</h2>
+        <!-- 章节列表将通过JavaScript动态生成 -->
+    </div>
+    
+    <div id="content">
+        <p>请从左侧选择章节阅读。</p>
+    </div>
 
-    <section id="home" class="banner">
-        <div>
-            <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">欢迎来到HappyWorld</h1>
-            <div style="background: rgba(0,0,0,0.7); padding: 1rem; border-radius: 10px; display: inline-block;">
-                <p style="font-size: 1.5rem; margin-bottom: 1rem;">加入QQ群获取服务器IP</p>
-                <div class="qq-group">
-                    <i class="fab fa-qq" style="margin-right: 0.5rem;"></i>
-                    QQ群号：1033877091
-                </div>
-            </div>
-            <button style="padding: 1rem 2rem; font-size: 1.2rem; background: #00ff88; border: none; border-radius: 5px; cursor: pointer; margin-top: 2rem;">
-                立即加入
-            </button>
-        </div>
-    </section>
-
-    <section id="about">
-        <h2 class="section-title">关于我们</h2>
-        <p style="max-width: 800px; margin: 0 auto; text-align: center;">
-            HappyWorld是一个生存向、细节打磨到极致的Minecraft服务器。我们致力于打造一个无神权、无熊孩子的纯净游戏环境，拥有完善的管理规则和负责任的管理团队。服务器使用Java 1.21版本（支持Forge等），欢迎所有热爱Minecraft的玩家加入我们的大家庭！
-        </p>
-    </section>
-
-    <section id="features" style="background: #f5f5f5;">
-        <h2 class="section-title">服务器特色</h2>
-        <div class="features">
-            <div class="feature-card">
-                <i class="fas fa-shield-alt fa-3x" style="color: #00ff88; margin-bottom: 1rem;"></i>
-                <h3>纯净游戏环境</h3>
-                <p>无神权，无熊孩子，管理超负责，规则完善，打造公平游戏体验</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-cogs fa-3x" style="color: #00ff88; margin-bottom: 1rem;"></i>
-                <h3>红石特性完整</h3>
-                <p>保留完整红石特性，修复Folia漏斗Bug，适合红石爱好者</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-users fa-3x" style="color: #00ff88; margin-bottom: 1rem;"></i>
-                <h3>友好社区</h3>
-                <p>活跃友好的玩家社区，定期举办活动，共同打造理想中的Minecraft世界</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="rules">
-        <h2 class="section-title">服务器规则</h2>
-        <div style="max-width: 800px; margin: 0 auto;">
-            <ul style="list-style: none;">
-                <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                    <i class="fas fa-ban" style="color: #ff4444; margin-right: 0.5rem;"></i>
-                    禁止使用外挂、作弊等行为
-                </li>
-                <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                    <i class="fas fa-comment-slash" style="color: #ff4444; margin-right: 0.5rem;"></i>
-                    请勿与其他服务器起冲突，禁止挖人或宣传其他服务器
-                </li>
-                <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                    <i class="fas fa-exclamation-triangle" style="color: #ff4444; margin-right: 0.5rem;"></i>
-                    如有矛盾或问题，请先联系管理员处理
-                </li>
-                <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                    <i class="fas fa-info-circle" style="color: #ff4444; margin-right: 0.5rem;"></i>
-                    新人入群后请根据QQ群管家提供的信息进入服务器
-                </li>
-            </ul>
-        </div>
-    </section>
-
-    <section id="sponsor" style="background: #f5f5f5;">
-        <h2 class="section-title">服务器赞助</h2>
-        <div style="max-width: 800px; margin: 0 auto;">
-            <div class="wechat-pay">
-                <i class="fab fa-weixin fa-2x" style="margin-right: 0.5rem;"></i>
-                <strong>推荐使用微信支付</strong>
-            </div>
-            
-            <p style="text-align: center; margin-bottom: 2rem;">
-                您的赞助将直接用于服务器电费和维护，帮助我们持续发展！<br>
-                付款时请备注玩家名+赞助金额，或把付款记录私发给服主。
-            </p>
-            
-            <table class="sponsor-table">
-                <tr>
-                    <th>金额</th>
-                    <th>奖励内容</th>
-                </tr>
-                <tr>
-                    <td>15元</td>
-                    <td>合金块5个 + fly权限 + 自定义称号1个</td>
-                </tr>
-                <tr>
-                    <td>20元</td>
-                    <td>10+钻石剑1把 + 自定义称号2个 + fly权限 + 种子权限 + 合金块10个</td>
-                </tr>
-                <tr>
-                    <td>25元</td>
-                    <td>+20下界合金剑1把 + 自定义称号3个 + fly权限 + 种子权限 + 合金块15个</td>
-                </tr>
-                <tr>
-                    <td>30元</td>
-                    <td>之前所有奖励 + 满足1个愿望(除OP和太夸张的愿望)</td>
-                </tr>
-                <tr>
-                    <td>50元</td>
-                    <td>之前所有奖励 + 满足3个愿望 + 服主喊10声义父</td>
-                </tr>
-            </table>
-            
-            <!-- 赞助二维码 -->
-            <div class="qrcode-container">
-                <div class="qrcode">
-                    <img src="https://i.postimg.cc/QN9d7vWd/628.jpg" alt="赞助服务器二维码">
-                    <p>赞助服务器</p>
-                </div>
-                <div class="qrcode">
-                    <img src="https://i.postimg.cc/zXTDtW7m/e28db16715f53afc8364f76a4ce1943b.jpg" alt="赞助绛衣虹人二维码">
-                    <p>赞助绛衣虹人（此非服务器赞助，为单独私货）</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="join" style="text-align: center;">
-        <h2 class="section-title">加入我们</h2>
-        <div style="max-width: 600px; margin: 0 auto;">
-            <p style="margin-bottom: 2rem;">按照以下步骤加入服务器：</p>
-            <div style="text-align: left; display: inline-block;">
-                <div style="margin-bottom: 1rem;">
-                    <span style="display: inline-block; width: 30px; height: 30px; background: #00ff88; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 1rem;">1</span>
-                    加入QQ群：<span class="qq-group">
-                        <i class="fab fa-qq" style="margin-right: 0.5rem;"></i>
-                        1033877091
-                    </span>（一键三连+关注进服玩！）
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <span style="display: inline-block; width: 30px; height: 30px; background: #00ff88; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 1rem;">2</span>
-                    根据群管家提供的指引，在Java 1.21版本(支持Forge)中进入服务器
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <span style="display: inline-block; width: 30px; height: 30px; background: #00ff88; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 1rem;">3</span>
-                    获取最新服务器IP地址
-                </div>
-            </div>
-            
-            <!-- QQ群二维码 -->
-            <div class="qrcode-container">
-                <div class="qrcode">
-                    <img src="https://i.postimg.cc/QN2xJSpk/3585b0db8a4c6c72168a38c770152758.jpg" alt="QQ群二维码">
-                    <p>扫一扫加入QQ群</p>
-                </div>
-            </div>
-            
-            <div style="margin-top: 1rem;">
-                <h3 style="margin-bottom: 1rem;">关注我们的B站</h3>
-                <p style="margin-bottom: 0.5rem;">
-                    <i class="fab fa-bilibili" style="color: #fb7299;"></i> 服主B站：Happyword服主
-                </p>
-                <p>
-                    <i class="fab fa-bilibili" style="color: #fb7299;"></i> 管理员B站：邑然有郁郁乎
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <footer style="background: #333; color: white; text-align: center; padding: 2rem;">
-        <div class="creators">
-            <h3>制作人员</h3>
-            <p style="margin-top: 1rem;">
-                <i class="fab fa-bilibili" style="color: #fb7299;"></i> 
-                绛衣虹人：<a href="https://space.bilibili.com/1082980093?spm_id_from=333.1007.0.0" style="color: #00ff88; text-decoration: none;">B站主页</a>
-            </p>
-        </div>
-        <p style="margin-top: 2rem;">© 2025 HappyWorld Minecraft服务器 版权所有</p>
-        <p style="margin-top: 1rem;">官网：https://limit-o.github.io/Limit-O/</p>
-    </footer>
+    <script>
+        // 你的GitHub仓库信息
+        const repoOwner = 'Limit-O';
+        const repoName = 'Limit-O';
+        const folderPath = 'novels'; // 存放小说的文件夹路径
+        
+        // 获取章节列表
+        async function fetchChapters() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
+                if (!response.ok) {
+                    throw new Error('获取章节列表失败');
+                }
+                const files = await response.json();
+                
+                const chapterList = document.getElementById('chapterList');
+                
+                // 过滤出.md文件并创建链接
+                files.forEach(file => {
+                    if (file.name.endsWith('.md')) {
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.className = 'chapter-link';
+                        link.textContent = file.name.replace('.txt', '');
+                        link.onclick = () => loadChapter(file.path);
+                        chapterList.appendChild(link);
+                    }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('content').innerHTML = `<p>加载章节列表时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 加载章节内容
+        async function loadChapter(filePath) {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`);
+                if (!response.ok) {
+                    throw new Error('获取章节内容失败');
+                }
+                const file = await response.json();
+                
+                // Base64解码内容
+                const content = atob(file.content);
+                document.getElementById('content').innerHTML = `<h2>${file.name.replace('.txt', '')}</h2><pre>${content}</pre>`;
+                
+                // 滚动到内容区域
+                document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('content').innerHTML = `<p>加载章节内容时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 页面加载时获取章节列表
+        window.onload = fetchChapters;
+    </script>
 </body>
 </html>
