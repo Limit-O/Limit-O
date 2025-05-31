@@ -14,6 +14,21 @@
             color: #333;
             background-color: #f9f9f9;
         }
+        .dark-mode {
+            background-color: #181818;
+            color: #f9f9f9;
+        }
+        .dark-mode #chapter-list,
+        .dark-mode #chapter-content {
+            background: #282828;
+            color: #f9f9f9;
+        }
+        .dark-mode .chapter-link {
+            color: #80cbc4;
+        }
+        .dark-mode .chapter-link:hover {
+            color: #26a69a;
+        }
         header {
             text-align: center;
             margin-bottom: 30px;
@@ -37,6 +52,10 @@
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            resize: horizontal;
+            overflow: auto;
+            min-width: 300px;
+            max-width: 100%;
         }
         .chapter-item {
             padding: 10px 0;
@@ -84,8 +103,9 @@
     <header>
         <h1>坚守</h1>
         <p>绛衣虹人</p>
+        <button id="toggle-theme">切换主题</button>
     </header>
-    
+
     <div id="chapter-container">
         <div id="chapter-list">
             <h2>章节列表</h2>
@@ -93,37 +113,43 @@
                 <p class="loading">加载章节列表中...</p>
             </div>
         </div>
-        
+
         <div id="chapter-content">
             <p>请从左侧选择章节开始阅读。</p>
+            <button id="download-chapter" style="display:none;">下载章节</button>
         </div>
     </div>
 
     <script>
-        // 配置信息
         const config = {
             githubUser: 'Limit-O',
             repoName: 'Limit-O',
-            branch: 'main',  // 你的分支名
-            folder: 'novels' // 存放小说的文件夹
+            branch: 'main',
+            folder: 'novels'
         };
-        
-        // 初始化章节列表
+
+        document.getElementById('toggle-theme').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+
+        window.onload = async function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+            await initChapterList();
+        };
+
         async function initChapterList() {
             try {
-                // 使用GitHub API获取目录内容
                 const apiUrl = `https://api.github.com/repos/${config.githubUser}/${config.repoName}/contents/${config.folder}`;
                 const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`获取章节列表失败: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`获取章节列表失败: ${response.status}`);
                 
                 const files = await response.json();
                 const chaptersContainer = document.getElementById('chapters');
                 chaptersContainer.innerHTML = '';
-                
-                // 过滤出.md文件并创建链接
+
                 files.forEach(file => {
                     if (file.name.endsWith('.md')) {
                         const chapterItem = document.createElement('div');
@@ -134,114 +160,54 @@
                         chapterLink.className = 'chapter-link';
                         chapterLink.textContent = file.name.replace('.md', '');
                         chapterLink.onclick = () => loadChapter(file.name);
-                        
+
                         chapterItem.appendChild(chapterLink);
                         chaptersContainer.appendChild(chapterItem);
                     }
                 });
-                
-                // 如果没有找到任何章节
+
                 if (chaptersContainer.children.length === 0) {
                     chaptersContainer.innerHTML = '<p>暂无章节</p>';
                 }
-                
             } catch (error) {
                 console.error('初始化章节列表失败:', error);
                 document.getElementById('chapters').innerHTML = `
                     <p class="error">加载章节列表失败!</p>
-                    <p>错误信息: ${error.message}</p>
                 `;
             }
         }
-        
-        // 加载章节内容
+
         async function loadChapter(chapterName) {
             const contentDiv = document.getElementById('chapter-content');
             contentDiv.innerHTML = '<p class="loading">加载中，请稍候...</p>';
-            
+
             try {
-                // 构建Raw文件URL
                 const rawUrl = `https://raw.githubusercontent.com/${config.githubUser}/${config.repoName}/${config.branch}/${config.folder}/${chapterName}`;
-                
-                // 获取文件内容
                 const response = await fetch(rawUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`获取章节内容失败: ${response.status}`);
-                }
-                
-                // 直接获取文本内容
+                if (!response.ok) throw new Error(`获取章节内容失败: ${response.status}`);
+
                 const content = await response.text();
-                
-                // 显示内容
-                contentDiv.innerHTML = `
-                    <h2>${chapterName.replace('.md', '')}</h2>
-                    <pre>${escapeHtml(content)}</pre>
-                `;
-                
-                // 保存阅读进度
-                saveReadingProgress(chapterName);
-                
+                contentDiv.innerHTML = `<h2>${chapterName.replace('.md', '')}</h2><pre>${content}</pre>`;
+
+                const downloadButton = document.getElementById('download-chapter');
+                downloadButton.style.display = 'block';
+                downloadButton.onclick = () => downloadChapter(chapterName, content);
+
             } catch (error) {
                 console.error('加载章节失败:', error);
-                contentDiv.innerHTML = `
-                    <p class="error">加载章节失败!</p>
-                    <p>错误信息: ${error.message}</p>
-                    <p>请检查网络连接或稍后再试。</p>
-                `;
+                contentDiv.innerHTML = `<p class="error">加载章节失败!</p>`;
             }
         }
-        
-        // HTML转义函数
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+
+        function downloadChapter(chapterName, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = chapterName.replace('.md', '') + '.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-        
-        // 保存阅读进度
-        function saveReadingProgress(chapterName) {
-            try {
-                localStorage.setItem('lastReadChapter', chapterName);
-            } catch (e) {
-                console.log('本地存储不可用:', e);
-            }
-        }
-        
-        // 恢复阅读进度
-        function restoreReadingProgress() {
-            try {
-                const lastChapter = localStorage.getItem('lastReadChapter');
-                if (lastChapter) {
-                    // 高亮最后阅读的章节
-                    const links = document.querySelectorAll('.chapter-link');
-                    links.forEach(link => {
-                        if (link.textContent + '.md' === lastChapter) {
-                            link.style.fontWeight = 'bold';
-                            link.style.color = '#0d47a1';
-                        }
-                    });
-                }
-            } catch (e) {
-                console.log('无法恢复阅读进度:', e);
-            }
-        }
-        
-        // 页面加载时初始化
-        window.onload = async function() {
-            await initChapterList();
-            restoreReadingProgress();
-            
-            // 如果URL中有章节参数，直接加载
-            const urlParams = new URLSearchParams(window.location.search);
-            const chapterParam = urlParams.get('chapter');
-            if (chapterParam) {
-                loadChapter(chapterParam + '.md');
-            }
-        };
     </script>
 </body>
 </html>
